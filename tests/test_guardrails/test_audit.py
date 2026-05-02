@@ -34,7 +34,7 @@ class TestAuditLogger:
         entry = json.loads(log_path.read_text(encoding="utf-8").strip())
         assert entry["rule_name"] == "cc"
         assert entry["action"] == "redact"
-        assert entry["matched_text_preview"] == "4111"
+        assert entry["matched_text_preview"] == "****"
         assert entry["context"] == "llm_invoke"
         assert "timestamp" in entry
 

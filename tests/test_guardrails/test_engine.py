@@ -177,7 +177,7 @@ class TestApply:
         recorded_rules = sorted(e["rule_name"] for e in entries)
         assert recorded_rules == ["long", "short"]
         previews = sorted(e["matched_text_preview"] for e in entries)
-        assert previews == ["secret_token", "super_secret_token_value"]
+        assert previews == ["secr****oken", "supe****alue"]
 
 
 class TestEdgeCases:

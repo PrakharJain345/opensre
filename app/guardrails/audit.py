@@ -28,9 +28,13 @@ class AuditLogger:
         context: str = "",
     ) -> None:
         """Append one audit entry. Never raises on write failure."""
-        preview = (
-            matched_text_preview[:40] if len(matched_text_preview) > 40 else matched_text_preview
-        )
+        preview = matched_text_preview
+        if action in {"redact", "block"}:
+            preview = _mask_preview(preview)
+
+        if len(preview) > 40:
+            preview = preview[:40]
+
         entry = {
             "timestamp": datetime.now(UTC).isoformat(),
             "rule_name": rule_name,
@@ -60,3 +64,15 @@ class AuditLogger:
             except json.JSONDecodeError:
                 continue
         return entries
+
+
+def _mask_preview(text: str) -> str:
+    """Mask the middle of a string to prevent full secret leakage.
+
+    Shows first 4 and last 4 characters if long enough, otherwise just asterisks.
+    """
+    if not text:
+        return ""
+    if len(text) <= 8:
+        return "****"
+    return f"{text[:4]}****{text[-4:]}"
